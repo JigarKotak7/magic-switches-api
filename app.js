@@ -11,6 +11,8 @@ const switchesRoutes = require('./api/routes/switches');
 
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
+mongoose.Promise = global.Promise;
+
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
