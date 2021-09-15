@@ -54,9 +54,21 @@ app.get("/api/switches", (req, res) => {
 });
 
 app.use((req, res, next) => {
-    const error = new Error('Not Found Any Route');
-    error.statusCode = 404;
-    next(error);
+    Switch.find()
+    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
+    .exec()
+    .then(docs => {
+        const response = {
+            count: docs.length,
+            switches: docs
+        };
+        console.log(response);
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({message: err});
+    });
 });
 
 app.use((error, req, res, next) => {
