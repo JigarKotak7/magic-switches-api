@@ -16,7 +16,7 @@ mongoose.Promise = global.Promise;
 
 app.use(router);
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 
