@@ -26,8 +26,6 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use("/", switchesRoutes);
-
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -43,7 +41,8 @@ app.use((req, res, next) => {
 //Routes which handle request
 // app.use("/", router);
 
-// app.use('/products', productsRoutes);
+app.use('/products', productsRoutes);
+app.use("/switches", switchesRoutes);
 // app.get("/switches", (req, res) => {
 //     Switch.find()
 //     .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
