@@ -29,7 +29,7 @@ app.use('/products', productsRoutes);
 app.use('/switches', switchesRoutes);
 
 app.use((req, res, next) => {
-    const error = new Error('Not Found');
+    const error = new Error('Not Found Any Route');
     error.statusCode = 404;
     next(error);
 });
