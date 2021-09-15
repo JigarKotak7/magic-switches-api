@@ -1,20 +1,20 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const router = express.Router();
 // const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 // "body-parser": "^1.19.0",
 
-const productsRoutes = require('./api/routes/products.js');
-const switchesRoutes = require('./api/routes/switches.js');
+const productsRoutes = require('./api/routes/products');
+const switchesRoutes = require('./api/routes/switches');
+
+const Switch = require('./api/Models/switch');
 
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
 mongoose.Promise = global.Promise;
 
-app.use(router);
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -34,6 +34,24 @@ app.use((req, res, next) => {
 //Routes which handle request
 app.use('/products', productsRoutes);
 app.use('/switches', switchesRoutes);
+
+app.get("/api/switches", (req, res) => {
+    Switch.find()
+    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
+    .exec()
+    .then(docs => {
+        const response = {
+            count: docs.length,
+            switches: docs
+        };
+        console.log(response);
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({message: err});
+    });
+});
 
 app.use((req, res, next) => {
     const error = new Error('Not Found Any Route');
