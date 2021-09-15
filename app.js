@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 //Routes which handle request
 // app.use("/", router);
 
-app.use('/products', productsRoutes);
+// app.use('/products', productsRoutes);
 app.use("/switches", switchesRoutes);
 // app.get("/switches", (req, res) => {
 //     Switch.find()
