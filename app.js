@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const productsRoutes = require('./api/routes/products');
 const switchesRoutes = require('./api/routes/switches');
 
-mongoose.connect('mongodb+srv://jigar_kotak:' + process.env.MONGO_ATLAS_PW + '@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
