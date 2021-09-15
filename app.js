@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+
+// "body-parser": "^1.19.0",
 
 const productsRoutes = require('./api/routes/products');
 const switchesRoutes = require('./api/routes/switches');
@@ -10,8 +12,8 @@ const switchesRoutes = require('./api/routes/switches');
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
