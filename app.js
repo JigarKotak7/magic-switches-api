@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 
 // const productsRoutes = require('./api/routes/products');
-const switchesRoutes = require('./api/routes/switches');
+// const switchesRoutes = require('./api/routes/switches');
 
 const router = require('./api/routes/switches');
 
@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 // app.use("/", router);
 // app.use("/", switchesRoutes);
 // app.use('/products', productsRoutes);
-app.use('/', switchesRoutes);
+app.use('/', router);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found Any Route');
