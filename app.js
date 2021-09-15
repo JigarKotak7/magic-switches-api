@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 // const productsRoutes = require('./api/routes/products');
 // const switchesRoutes = require('./api/routes/switches');
 
+const Switch = require('./api/Models/switch');
+
 const router = require('./api/routes/switches');
 
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
@@ -35,7 +37,21 @@ app.use((req, res, next) => {
 // app.use("/", switchesRoutes);
 // app.use('/products', productsRoutes);
 app.get("/switches", (req, res) => {
-    res.status(200).json({message: "Hit switches end point"});
+    Switch.find()
+    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
+    .exec()
+    .then(docs => {
+        const response = {
+            count: docs.length,
+            switches: docs
+        };
+        console.log(response);
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({message: err});
+    });
 });
 app.use('/', router);
 
