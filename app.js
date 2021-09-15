@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
 
 // "body-parser": "^1.19.0",
 
-const productsRoutes = require('./api/routes/products');
-const switchesRoutes = require('./api/routes/switches');
+const productsRoutes = require('./api/routes/products.js');
+const switchesRoutes = require('./api/routes/switches.js');
 
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
@@ -32,8 +32,8 @@ app.use((req, res, next) => {
 
 
 //Routes which handle request
-app.use('products', productsRoutes);
-app.use('switches', switchesRoutes);
+app.use('/products', productsRoutes);
+app.use('/switches', switchesRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found Any Route');
