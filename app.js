@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const router = express.Router();
 // const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
@@ -13,9 +14,11 @@ mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.ne
 
 mongoose.Promise = global.Promise;
 
+app.use(router);
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
+
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
