@@ -1,23 +1,22 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-// "body-parser": "^1.19.0",
 
-const productsRoutes = require('./api/routes/products');
+// const productsRoutes = require('./api/routes/products');
 const switchesRoutes = require('./api/routes/switches');
 
-const Switch = require('./api/Models/switch');
+const router = require('./api/routes/switches');
 
 mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
 mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 
 app.use((req, res, next) => {
@@ -32,43 +31,15 @@ app.use((req, res, next) => {
 
 
 //Routes which handle request
-app.use('/products', productsRoutes);
-app.use('/switches', switchesRoutes);
-
-app.get("/api/switches", (req, res) => {
-    Switch.find()
-    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            switches: docs
-        };
-        console.log(response);
-        res.status(200).json(response);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({message: err});
-    });
-});
+// app.use("/", router);
+// app.use("/", switchesRoutes);
+// app.use('/products', productsRoutes);
+app.use('/', switchesRoutes);
 
 app.use((req, res, next) => {
-    Switch.find()
-    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            switches: docs
-        };
-        console.log(response);
-        res.status(200).json(response);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({message: err});
-    });
+    const error = new Error('Not Found Any Route');
+    error.statusCode = 404;
+    next(error);
 });
 
 app.use((error, req, res, next) => {

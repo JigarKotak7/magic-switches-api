@@ -4,7 +4,7 @@ const router = express.Router();
 const Switch = require('../Models/switch');
 const mongoose = require('mongoose');
 
-router.get('/', (req, res, next) => {
+router.get('/switches', (req, res, next) => {
     Switch.find()
     .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
     .exec()
@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/switches', (req, res, next) => {
     const switchData = new Switch({
         _id: new mongoose.Types.ObjectId(),
         auth: req.body.auth,
@@ -48,7 +48,7 @@ router.post('/', (req, res, next) => {
     });
 });
 
-router.get('/:switchId', (req, res, next) => {
+router.get('/switches/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     Switch.findOne({switchId: id}).then(doc => {
         console.log(doc);
@@ -75,7 +75,7 @@ router.get('/:switchId', (req, res, next) => {
     // });
 });
 
-router.patch('/:switchId', (req, res, next)=>{
+router.patch('/switches/:switchId', (req, res, next)=>{
     const id = req.params.switchId;
     // router.get('/:switchId', (req, res, next)=>{
         Switch.findOne({switchId: id}).then(doc => {
@@ -139,7 +139,7 @@ router.patch('/:switchId', (req, res, next)=>{
 
 });
 
-router.delete('/:switchId', (req, res, next)=>{
+router.delete('/switches/:switchId', (req, res, next)=>{
     const switchId = req.params.switchId;
     Switch.remove({switchId: switchId})
     .exec()
