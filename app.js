@@ -34,6 +34,9 @@ app.use((req, res, next) => {
 // app.use("/", router);
 // app.use("/", switchesRoutes);
 // app.use('/products', productsRoutes);
+app.get("/switches", (req, res) => {
+    res.status(200).json({message: "Hit switches end point"});
+});
 app.use('/', router);
 
 app.use((req, res, next) => {
