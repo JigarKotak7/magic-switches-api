@@ -22,7 +22,7 @@
     "morgan": "^1.10.0"
   },
   "engines": {
-    "node": ">=12"
+    "node": "16.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
