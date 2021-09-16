@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
     Switch.find()
-        .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
+        .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
         .exec()
         .then(docs => {
             const response = {
@@ -50,7 +50,10 @@ router.post('/', (req, res, next) => {
 
 router.get('/:switchId', (req, res, next) => {
     const id = req.params.switchId;
-    Switch.findOne({ switchId: id }).then(doc => {
+    Switch.findOne({ switchId: id })
+    .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
+    .exec()
+    .then(doc => {
         console.log(doc);
         if (doc) {
             res.status(200).json(doc);
@@ -78,6 +81,8 @@ router.get('/:switchId', (req, res, next) => {
 router.get('/deviceId/:deviceId', (req, res, next) => {
     const id = req.params.deviceId;
     Switch.where({deviceId: id})
+    .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
+    .exec()
     .then(docs => {
         res.status(200).json(docs);
         console.log(docs);
