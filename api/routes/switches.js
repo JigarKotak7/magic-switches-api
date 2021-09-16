@@ -78,28 +78,61 @@ router.get('/:switchId', (req, res, next) => {
 router.patch('/on/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     changeSwitchStatus("1", id, res);
-    // Switch.updateOne({ switchId: id }, { $set: { switchStatus: "1" } })
-    //     .exec()
-    //     .then(result => {
-    //         console.log(result);
-    //         Switch.findOne({ switchId: id })
-    //             .then(doc => {
-    //                 res.status(200).json(doc);
-    //             })
-    //             .catch(err => {
-    //                 res.status(500).json({ message: err });
-    //             });
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
-
 });
 
 router.patch('/off/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     changeSwitchStatus("0", id, res);
 });
+
+router.patch('/changeName/:switchId', (req, res, next) => {
+    const id = req.params.switchId;
+    const newName = req.body.newName;
+    changeSwitchName(newName, id, res);
+});
+
+router.patch('/changeIcon/:switchId', (req, res, next) => {
+    const id = req.params.switchId;
+    const newIconName = req.body.newIconName;
+    changeSwitchIcon(newIconName, id, res);
+});
+
+function changeSwitchIcon(newIconName, id, res){
+    Switch.updateOne({ switchId: id }, { $set: { "switchIcon": newIconName } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ switchId: id })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+
+function changeSwitchName(newName, id, res){
+    Switch.updateOne({ switchId: id }, { $set: { "switchName": newName } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ switchId: id })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
 
 function changeSwitchStatus(newStatus, id, res){
     Switch.updateOne({ switchId: id }, { $set: { switchStatus: newStatus } })
@@ -122,7 +155,6 @@ function changeSwitchStatus(newStatus, id, res){
 
 router.patch('/toggle/:switchId', (req, res, next) => {
     const id = req.params.switchId;
-    // router.get('/:switchId', (req, res, next)=>{
     Switch.findOne({ switchId: id }).then(doc => {
         console.log(doc);
         if (doc) {
@@ -132,21 +164,6 @@ router.patch('/toggle/:switchId', (req, res, next) => {
                 console.log(req.body.on);
                 const statusOn = req.body.on;
                 changeSwitchStatus(statusOn, id, res);
-                // Switch.updateOne({ switchId: id }, { $set: { switchStatus: statusOn } })
-                //     .exec()
-                //     .then(result => {
-                //         console.log(result);
-                //         Switch.findOne({ switchId: id })
-                //             .then(doc => {
-                //                 res.status(200).json(doc);
-                //             })
-                //             .catch(err => {
-                //                 res.status(500).json({ message: err });
-                //             });
-                //     })
-                //     .catch(err => {
-                //         console.log(err);
-                //     });
                 console.log('switch Off');
                 return;
             }
@@ -154,21 +171,6 @@ router.patch('/toggle/:switchId', (req, res, next) => {
                 console.log(req.body.off);
                 const statusOff = req.body.off;
                 changeSwitchStatus(statusOff, id, res);
-                // Switch.updateOne({ switchId: id }, { $set: { switchStatus: statusOff } })
-                //     .exec()
-                //     .then(result => {
-                //         console.log(result);
-                //         Switch.findOne({ switchId: id })
-                //             .then(doc => {
-                //                 res.status(200).json(doc);
-                //             })
-                //             .catch(err => {
-                //                 res.status(500).json({ message: err });
-                //             });
-                //     })
-                //     .catch(err => {
-                //         console.log(err);
-                //     });
                 console.log('switch ON');
                 return;
             }
@@ -182,7 +184,6 @@ router.patch('/toggle/:switchId', (req, res, next) => {
             error: err
         })
     });
-    // });
 
 });
 
