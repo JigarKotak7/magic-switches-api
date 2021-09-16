@@ -75,6 +75,21 @@ router.get('/:switchId', (req, res, next) => {
     // });
 });
 
+router.get('/deviceId/:deviceId', (req, res, next) => {
+    const id = req.params.deviceId;
+    Switch.where({deviceId: id})
+    .then(docs => {
+        res.status(200).json(docs);
+        console.log(docs);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+        console.log(err);
+    });
+});
+
 router.patch('/on/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     changeSwitchStatus("1", id, res);
