@@ -6,20 +6,20 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
     Switch.find()
-    .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            switches: docs
-        };
-        console.log(response);
-        res.status(200).json(response);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({message: err});
-    });
+        .select('switchName switchId switchGenericName switchIcon switchStatus deviceId')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                switches: docs
+            };
+            console.log(response);
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ message: err });
+        });
 });
 
 router.post('/', (req, res, next) => {
@@ -50,12 +50,12 @@ router.post('/', (req, res, next) => {
 
 router.get('/:switchId', (req, res, next) => {
     const id = req.params.switchId;
-    Switch.findOne({switchId: id}).then(doc => {
+    Switch.findOne({ switchId: id }).then(doc => {
         console.log(doc);
-        if(doc){
+        if (doc) {
             res.status(200).json(doc);
-        }else{
-            res.status(404).json({message: "No Switch Found"});
+        } else {
+            res.status(404).json({ message: "No Switch Found" });
         }
     }).catch(err => {
         console.log(err);
@@ -75,81 +75,128 @@ router.get('/:switchId', (req, res, next) => {
     // });
 });
 
-router.patch('/:switchId', (req, res, next)=>{
+router.patch('/on/:switchId', (req, res, next) => {
+    const id = req.params.switchId;
+    changeSwitchStatus("1", id, res);
+    // Switch.updateOne({ switchId: id }, { $set: { switchStatus: "1" } })
+    //     .exec()
+    //     .then(result => {
+    //         console.log(result);
+    //         Switch.findOne({ switchId: id })
+    //             .then(doc => {
+    //                 res.status(200).json(doc);
+    //             })
+    //             .catch(err => {
+    //                 res.status(500).json({ message: err });
+    //             });
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     });
+
+});
+
+router.patch('/off/:switchId', (req, res, next) => {
+    const id = req.params.switchId;
+    changeSwitchStatus("0", id, res);
+});
+
+function changeSwitchStatus(newStatus, id, res){
+    Switch.updateOne({ switchId: id }, { $set: { switchStatus: newStatus } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ switchId: id })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+}
+
+router.patch('/toggle/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     // router.get('/:switchId', (req, res, next)=>{
-        Switch.findOne({switchId: id}).then(doc => {
-            console.log(doc);
-            if(doc){
-                console.log(doc['switchStatus']);
-                
-                if(doc['switchStatus'] === "0"){
-                    console.log(req.body.on);
-                    const statusOn = req.body.on;
-                    Switch.updateOne({switchId: id}, {$set: {switchStatus: statusOn}})
-                    .exec()
-                    .then(result =>{
-                        console.log(result);
-                        Switch.findOne({switchId: id})
-                            .then(doc => {
-                            res.status(200).json(doc);
-                        })
-                        .catch(err => {
-                            res.status(500).json({message: err});
-                        });
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                    });
-                    console.log('switch Off');
-                    return;
-                }
-                else{
-                    console.log(req.body.off);
-                    const statusOff = req.body.off;
-                    Switch.updateOne({switchId: id}, {$set: {switchStatus: statusOff}})
-                    .exec()
-                    .then(result =>{
-                        console.log(result);
-                        Switch.findOne({switchId: id})
-                            .then(doc => {
-                            res.status(200).json(doc);
-                        })
-                        .catch(err => {
-                            res.status(500).json({message: err});
-                        });
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                    });
-                    console.log('switch ON');
-                    return;
-                }
+    Switch.findOne({ switchId: id }).then(doc => {
+        console.log(doc);
+        if (doc) {
+            console.log(doc['switchStatus']);
 
-            }else{
-                res.status(404).json({message: "No Switch Found"});
+            if (doc['switchStatus'] === "0") {
+                console.log(req.body.on);
+                const statusOn = req.body.on;
+                changeSwitchStatus(statusOn, id, res);
+                // Switch.updateOne({ switchId: id }, { $set: { switchStatus: statusOn } })
+                //     .exec()
+                //     .then(result => {
+                //         console.log(result);
+                //         Switch.findOne({ switchId: id })
+                //             .then(doc => {
+                //                 res.status(200).json(doc);
+                //             })
+                //             .catch(err => {
+                //                 res.status(500).json({ message: err });
+                //             });
+                //     })
+                //     .catch(err => {
+                //         console.log(err);
+                //     });
+                console.log('switch Off');
+                return;
             }
-        }).catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
-        });
+            else {
+                console.log(req.body.off);
+                const statusOff = req.body.off;
+                changeSwitchStatus(statusOff, id, res);
+                // Switch.updateOne({ switchId: id }, { $set: { switchStatus: statusOff } })
+                //     .exec()
+                //     .then(result => {
+                //         console.log(result);
+                //         Switch.findOne({ switchId: id })
+                //             .then(doc => {
+                //                 res.status(200).json(doc);
+                //             })
+                //             .catch(err => {
+                //                 res.status(500).json({ message: err });
+                //             });
+                //     })
+                //     .catch(err => {
+                //         console.log(err);
+                //     });
+                console.log('switch ON');
+                return;
+            }
+
+        } else {
+            res.status(404).json({ message: "No Switch Found" });
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    });
     // });
 
 });
 
-router.delete('/:switchId', (req, res, next)=>{
+router.delete('/:switchId', (req, res, next) => {
     const switchId = req.params.switchId;
-    Switch.remove({switchId: switchId})
-    .exec()
-    .then(result => {
-        res.status(200).json(result);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({message: err});
-    });
+    Switch.remove({ switchId: switchId })
+        .exec()
+        .then(result => {
+            res.status(200).json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ message: err });
+        });
 });
 
 module.exports = router;
