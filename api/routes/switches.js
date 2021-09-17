@@ -84,8 +84,12 @@ router.get('/deviceId/:deviceId', (req, res, next) => {
     .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
     .exec()
     .then(docs => {
+        const response = {
+            count: docs.length,
+            switches: docs
+        };
         res.status(200).json(docs);
-        console.log(docs);
+        console.log(response);
     })
     .catch(err => {
         res.status(500).json({
