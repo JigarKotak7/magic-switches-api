@@ -88,7 +88,7 @@ router.get('/deviceId/:deviceId', (req, res, next) => {
             count: docs.length,
             switches: docs
         };
-        res.status(200).json(docs);
+        res.status(200).json(response);
         console.log(response);
     })
     .catch(err => {
