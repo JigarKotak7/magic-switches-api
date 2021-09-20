@@ -4,6 +4,7 @@ const router = express.Router();
 const Switch = require('../Models/switch');
 const mongoose = require('mongoose');
 
+
 router.get('/', (req, res, next) => {
     Switch.find()
         .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
@@ -109,10 +110,26 @@ router.patch('/off/:switchId', (req, res, next) => {
     changeSwitchStatus("0", id, res);
 });
 
+router.patch('/switchName/on/:switchName', (req, res, next) => {
+    const switchName = req.params.switchName;
+    changeSwitchStatusByName("1", switchName, res);
+});
+
+router.patch('/switchName/off/:switchName', (req, res, next) => {
+    const switchName = req.params.switchName;
+    changeSwitchStatusByName("0", switchName, res);
+});
+
 router.patch('/changeName/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     const newName = req.body.newName;
     changeSwitchName(newName, id, res);
+});
+
+router.patch('/changeName/bySwitchName/:switchName', (req, res, next) => {
+    const switchName = req.params.switchName;
+    const newName = req.body.newName;
+    changeSwitchNameBySwitchName(newName, switchName, res);
 });
 
 router.patch('/changeIcon/:switchId', (req, res, next) => {
@@ -158,12 +175,49 @@ function changeSwitchName(newName, id, res){
         });
 }
 
+function changeSwitchNameBySwitchName(newName, switchName, res){
+    Switch.updateOne({ switchName: switchName }, { $set: { "switchName": newName } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ switchName: newName })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
 function changeSwitchStatus(newStatus, id, res){
     Switch.updateOne({ switchId: id }, { $set: { switchStatus: newStatus } })
         .exec()
         .then(result => {
             console.log(result);
             Switch.findOne({ switchId: id })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+}
+
+function changeSwitchStatusByName(newStatus, name, res){
+    Switch.updateOne({ switchName: name }, { $set: { switchStatus: newStatus } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ switchName: name })
                 .then(doc => {
                     res.status(200).json(doc);
                 })
@@ -222,6 +276,16 @@ router.delete('/:switchId', (req, res, next) => {
             console.log(err);
             res.status(500).json({ message: err });
         });
+});
+
+const connection = mongoose.connection;
+
+connection.once("open", ()=>{
+    const switchesStream = connection.collection('switches').watch();
+    switchesStream.on('change', (change)=>{
+        console.log('recording Change');
+        console.log(change.operationType);
+    });
 });
 
 module.exports = router;

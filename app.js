@@ -16,21 +16,22 @@ const router = require('./api/routes/switches');
 
 // mongoose.connect('mongodb+srv://jigar_kotak:Ivory_3737@cluster0.yejqu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 // Connect to DB
-mongoose.connect(process.env.MONGODB_URI || uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => 
+mongoose.connect(process.env.MONGODB_URI || uri, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log('Connected to DB!')
-);
+});
+
 
 mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization' );
-    if(req.method === 'OPTIONS'){
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
         return res.status(200).json({});
     }
@@ -84,4 +85,3 @@ app.use((error, req, res, next) => {
 // });
 
 module.exports = app;
-    
