@@ -120,6 +120,16 @@ router.patch('/switchName/off/:switchName', (req, res, next) => {
     changeSwitchStatusByName("0", switchName, res);
 });
 
+router.patch('/byId/on/:id', (req, res, next) => {
+    const id = req.params.id;
+    changeSwitchStatusById("1", id, res);
+});
+
+router.patch('/byId/off/:id', (req, res, next) => {
+    const id = req.params.id;
+    changeSwitchStatusById("0", id, res);
+});
+
 router.patch('/changeName/:switchId', (req, res, next) => {
     const id = req.params.switchId;
     const newName = req.body.newName;
@@ -218,6 +228,25 @@ function changeSwitchStatusByName(newStatus, name, res){
         .then(result => {
             console.log(result);
             Switch.findOne({ switchName: name })
+                .then(doc => {
+                    res.status(200).json(doc);
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+}
+
+function changeSwitchStatusById(newStatus, id, res){
+    Switch.updateOne({ _id: id }, { $set: { switchStatus: newStatus } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            Switch.findOne({ _id: id })
                 .then(doc => {
                     res.status(200).json(doc);
                 })
