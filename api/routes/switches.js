@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
     Switch.find()
-        .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId')
+        .select('switchName switchId switchStatus hostName auth switchGenericName switchIcon deviceId userId room')
         .exec()
         .then(docs => {
             const response = {
@@ -26,9 +26,11 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     const switchData = new Switch({
         _id: new mongoose.Types.ObjectId(),
-        auth: req.body.auth,
+        // auth: req.body.auth,
         deviceId: req.body.deviceId,
-        hostName: req.body.hostName,
+        userId: req.body.userId,
+        room: req.body.room,
+        // hostName: req.body.hostName,
         switchGenericName: req.body.switchGenericName,
         switchIcon: req.body.switchIcon,
         switchId: req.body.switchId,
