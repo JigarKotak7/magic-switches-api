@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Switch = require('../Models/switch');
 const mongoose = require('mongoose');
+const { response } = require('../../app');
 
 
 router.get('/', (req, res, next) => {
@@ -99,6 +100,21 @@ router.get('/deviceId/:deviceId', (req, res, next) => {
             error: err
         });
         console.log(err);
+    });
+});
+
+router.get('/getDeviceStatus/:switchGenericName', (req, res, next)=>{
+    const genericName = req.params.switchGenericName;
+    Switch.findOne({switchGenericName: genericName})
+    .select('switchStatus')
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc['switchStatus']);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
     });
 });
 
